@@ -18,7 +18,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const settings = await getSettings();
@@ -51,6 +50,7 @@ export default async function HomePage() {
             src={settings.heroImageUrl}
             alt="Hero"
             fill
+            unoptimized={true}
             className="object-cover scale-105 animate-[slowZoom_20s_infinite_alternate]"
             priority
           />
@@ -85,6 +85,7 @@ export default async function HomePage() {
                     alt="Ali Studio Logo"
                     width={160}
                     height={160}
+                    unoptimized={true}
                     className="object-contain drop-shadow-[0_0_40px_rgba(201,168,76,0.3)]"
                   />
                   {/* Subtle glow ring behind logo */}
@@ -191,11 +192,11 @@ export default async function HomePage() {
                 </p>
               </div>
               <div className="pt-4">
-                <Image src="/signature.png" alt="Signature" width={150} height={60} className="opacity-50" />
+                
               </div>
             </FadeUp>
             <FadeUp delay={0.2} className="relative w-full aspect-[5/4] rounded-3xl overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] border border-[var(--accent)]/10 group">
-              <Image src="/image3.png" alt="About Studio" fill className="object-cover transition-transform duration-1000 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 50vw" />
+              <Image src="/image3.png" alt="About Studio" fill unoptimized={true} className="object-cover transition-transform duration-1000 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 50vw" />
               <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none" />
             </FadeUp>
           </div>
@@ -224,6 +225,7 @@ export default async function HomePage() {
                           src={item.images[0]}
                           alt={item.title}
                           fill
+                          unoptimized={true}
                           className="object-cover object-top"
                           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                         />
@@ -277,6 +279,7 @@ export default async function HomePage() {
                             src={serviceImg}
                             alt={service.title}
                             fill
+                            unoptimized={true}
                             className="object-contain bg-black transition-transform duration-700 group-hover:scale-102"
                             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                           />
@@ -409,11 +412,12 @@ export default async function HomePage() {
                       {/* Main Image Container */}
                       <div className="relative rounded-[2rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.9)] border border-white/10 bg-neutral-900 w-full aspect-[3/4] z-10">
                         {member.imageUrl ? (
-                          <Image 
-                            src={member.imageUrl} 
-                            alt={member.name} 
-                            fill 
-                            className="object-cover object-top transition-transform duration-1000 hover:scale-105" 
+                          <Image
+                            src={member.imageUrl}
+                            alt={member.name}
+                            fill
+                            unoptimized={true}
+                            className="object-cover object-top transition-transform duration-1000 hover:scale-105"
                             sizes="(max-width: 768px) 340px, 370px"
                             priority
                           />
@@ -467,7 +471,7 @@ export default async function HomePage() {
 
       {/* Stats Section */}
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-transparent to-black/80 border-t border-white/5">
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay pointer-events-none" />
+        <div className="absolute inset-0 opacity-5 mix-blend-overlay pointer-events-none" />
         <FadeUp className="container-main grid gap-12 md:grid-cols-3">
           <AnimatedCounter value={settings?.statsYearsExp === 8 ? 10 : (settings?.statsYearsExp ?? 10)} label="Years Experience" suffix="+" />
           <AnimatedCounter value={settings?.statsProjectsDone ?? 250} label="Projects Done" suffix="+" />

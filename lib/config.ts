@@ -30,7 +30,7 @@ async function ensureDbConnectionForConfig(): Promise<boolean> {
   if (!uri) return false;
   if (mongoose.connection.readyState === 1) return true;
   try {
-    await mongoose.connect(uri, { bufferCommands: false });
+    await mongoose.connect(uri);
     return true;
   } catch {
     return false;

@@ -5,6 +5,8 @@ export interface IAdmin {
   passwordHash: string;
   loginAttempts?: number;
   lockUntil?: Date;
+  changePasswordOtp?: string;
+  changePasswordOtpExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,6 +17,8 @@ const AdminSchema = new Schema<IAdmin>(
     passwordHash: { type: String, required: true },
     loginAttempts: { type: Number, default: 0 },
     lockUntil: { type: Date },
+    changePasswordOtp: { type: String },
+    changePasswordOtpExpires: { type: Date },
   },
   { timestamps: true }
 );

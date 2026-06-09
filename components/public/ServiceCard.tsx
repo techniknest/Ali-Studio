@@ -57,6 +57,7 @@ export function ServiceCard({ service }: { service: { title: string; imageUrl?: 
                   src={img}
                   alt={service.title}
                   fill
+                  unoptimized={true}
                   className="object-contain bg-black transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   priority={i === 0}

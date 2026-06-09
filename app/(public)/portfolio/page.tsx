@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PortfolioPage() {
-  const { items } = await getPortfolioItems({ visibleOnly: true, limit: 24 });
+  const { items } = await getPortfolioItems({ visibleOnly: true, limit: 100 });
 
   return (
     <div className="pt-24 section-padding">

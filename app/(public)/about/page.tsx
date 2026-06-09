@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   description: "Learn about Ali Studio and our cinematic philosophy.",
 };
 
-export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
   const settings = await getSettings();
@@ -53,9 +52,10 @@ export default async function AboutPage() {
               
               <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-neutral-900 z-10">
                 <Image
-                  src={aboutImageUrl}
+                  src={settings?.aboutImageUrl || "/about-image.jpeg"}
                   alt="About Ali Studio"
                   fill
+                  unoptimized={true}
                   className="object-cover transition-transform duration-1000 group-hover:scale-105"
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   priority
@@ -107,7 +107,7 @@ export default async function AboutPage() {
             </div>
 
             <div className="pt-4 flex justify-center lg:justify-start">
-              <Image src="/signature.png" alt="Signature" width={150} height={60} className="opacity-50" />
+              
             </div>
           </FadeUp>
         </div>
@@ -146,6 +146,7 @@ export default async function AboutPage() {
                         src={member.imageUrl}
                         alt={member.name}
                         fill
+                        unoptimized={true}
                         className="object-cover object-top transition-transform duration-1000 group-hover:scale-110"
                         sizes="310px"
                       />

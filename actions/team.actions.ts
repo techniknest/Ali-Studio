@@ -1,42 +1,65 @@
 "use server";
 
-import { connectDB } from "@/lib/mongodb";
-import Team from "@/models/Team";
+import { requireAuth } from "@/lib/auth-helpers";
+import { teamService } from "@/services/team.service";
+import { ActionResponse, successResponse, errorResponse } from "@/lib/types/action-response";
+import { revalidatePath } from "next/cache";
 
-export async function getTeam(visibleOnly = false) {
+function revalidateTeam() {
+  revalidatePath("/about");
+  revalidatePath("/");
+  revalidatePath("/admin/team");
+}
+
+export async function getTeam(visibleOnly = false): Promise<any[]> {
   try {
-    await connectDB();
-    const query = visibleOnly ? { visible: true } : {};
-    const team = await Team.find(query).sort({ order: 1 }).lean();
-    return JSON.parse(JSON.stringify(team));
-  } catch {
+    return await teamService.getTeam(visibleOnly);
+  } catch (err) {
+    console.error("Failed to get team:", err);
     return [];
   }
 }
 
-export async function createTeamMember(data: any) {
-  await connectDB();
-  const count = await Team.countDocuments();
-  const item = await Team.create({ ...data, order: count });
-  return { success: true, id: item._id.toString() };
+export async function createTeamMember(data: any): Promise<ActionResponse> {
+  try {
+    await requireAuth();
+    const item = await teamService.createMember(data) as any;
+    revalidateTeam();
+    return successResponse(undefined, item._id?.toString());
+  } catch (err: any) {
+    return errorResponse(err);
+  }
 }
 
-export async function updateTeamMember(id: string, data: any) {
-  await connectDB();
-  await Team.findByIdAndUpdate(id, data);
-  return { success: true };
+export async function updateTeamMember(id: string, data: any): Promise<ActionResponse> {
+  try {
+    await requireAuth();
+    await teamService.updateMember(id, data);
+    revalidateTeam();
+    return successResponse();
+  } catch (err: any) {
+    return errorResponse(err);
+  }
 }
 
-export async function deleteTeamMember(id: string) {
-  await connectDB();
-  await Team.findByIdAndDelete(id);
-  return { success: true };
+export async function deleteTeamMember(id: string): Promise<ActionResponse> {
+  try {
+    await requireAuth();
+    await teamService.deleteMember(id);
+    revalidateTeam();
+    return successResponse();
+  } catch (err: any) {
+    return errorResponse(err);
+  }
 }
 
-export async function reorderTeam(ids: string[]) {
-  await connectDB();
-  await Promise.all(
-    ids.map((id, index) => Team.findByIdAndUpdate(id, { order: index }))
-  );
-  return { success: true };
+export async function reorderTeam(ids: string[]): Promise<ActionResponse> {
+  try {
+    await requireAuth();
+    await teamService.reorderTeam(ids);
+    revalidateTeam();
+    return successResponse();
+  } catch (err: any) {
+    return errorResponse(err);
+  }
 }

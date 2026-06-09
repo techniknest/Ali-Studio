@@ -11,9 +11,7 @@ export function PortfolioGrid({ items }: { items: { _id: string; title: string; 
   const [spans, setSpans] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    // Duplicate the items array to ensure a rich, fully filled grid without gaps
-    const doubled = [...items, ...items];
-    let arr = [...doubled];
+    let arr = [...items];
     
     // Shuffle helper function
     const shuffleArray = <T,>(array: T[]): T[] => {
@@ -35,7 +33,7 @@ export function PortfolioGrid({ items }: { items: { _id: string; title: string; 
     const MIN_DISTANCE = 5;
 
     while (hasViolations && attempts < 200) {
-      arr = shuffleArray(doubled);
+      arr = shuffleArray(items);
       hasViolations = false;
       attempts++;
 
@@ -50,11 +48,7 @@ export function PortfolioGrid({ items }: { items: { _id: string; title: string; 
       }
     }
 
-    // Ensure unique key IDs by appending index or suffix to avoid React key conflict warnings
-    const finalItems = arr.map((item, idx) => ({
-      ...item,
-      _id: `${item._id}-dup-${idx}`
-    }));
+    const finalItems = arr;
 
     setShuffledItems(finalItems);
   }, [items]);
@@ -101,6 +95,8 @@ export function PortfolioGrid({ items }: { items: { _id: string; title: string; 
                   src={item.images[0]}
                   alt={item.title}
                   fill
+                  unoptimized={true}
+                  priority={index < 8}
                   onLoad={(e) => handleImageLoad(e, id)}
                   className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"

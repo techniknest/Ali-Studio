@@ -3,15 +3,15 @@
 import { requireAuth } from "@/lib/auth-helpers";
 import { getCloudinaryClient } from "@/lib/cloudinary";
 
-export async function uploadToCloudinary(formData: FormData, folder: string) {
-  await requireAuth();
-
-  const file = formData.get("file") as File;
-  if (!file) {
-    return { success: false, error: "No file provided" };
-  }
-
+export async function uploadToCloudinary(formData: FormData, folder: string): Promise<{ success: boolean; url?: string; error?: string }> {
   try {
+    await requireAuth();
+
+    const file = formData.get("file") as File;
+    if (!file) {
+      return { success: false, error: "No file provided" };
+    }
+
     const cloudinary = await getCloudinaryClient();
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -27,7 +27,9 @@ export async function uploadToCloudinary(formData: FormData, folder: string) {
       uploadStream.end(buffer);
     });
 
-    return { success: true, url: (result as any).secure_url as string };
+    const url = (result as any).secure_url as string;
+    
+    return { success: true, url };
   } catch (error: any) {
     console.error("Cloudinary upload error:", error);
     return { success: false, error: error.message || "Failed to upload image" };

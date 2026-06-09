@@ -115,7 +115,7 @@ export function HeroBackground() {
       style={{ opacity: bgOpacity }}
     >
       {/* Film Grain Overlay */}
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.04] mix-blend-overlay z-20 pointer-events-none" />
+      <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay z-20 pointer-events-none" />
 
       {/* Cinematic Vignette */}
       <div

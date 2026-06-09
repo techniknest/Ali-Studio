@@ -20,6 +20,7 @@ export const changePasswordSchema = z
       .regex(/[a-z]/, "Must contain a lowercase letter")
       .regex(/[0-9]/, "Must contain a number"),
     confirmPassword: z.string(),
+    otp: z.string().optional(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",

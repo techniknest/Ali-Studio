@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { changeEmailSchema, changePasswordSchema } from "@/lib/validators/auth";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MaskedInput } from "@/components/admin/MaskedInput";
-import { changeAdminEmail, changeAdminPassword } from "@/actions/auth.actions";
+import { changeAdminEmail, changeAdminPassword, requestPasswordChangeOtpAction } from "@/actions/auth.actions";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
 
@@ -18,6 +18,20 @@ type PasswordForm = z.infer<typeof changePasswordSchema>;
 
 export function AccountSettings({ currentEmail }: { currentEmail: string }) {
   const [pending, setPending] = useState(false);
+  
+  // OTP State
+  const [otpSent, setOtpSent] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timerId);
+    } else if (timeLeft === 0 && otpSent) {
+      setOtpSent(false);
+      toast.error("OTP expired. Please request a new one.");
+    }
+  }, [timeLeft, otpSent]);
 
   const emailForm = useForm<EmailForm>({ resolver: zodResolver(changeEmailSchema) });
   const passwordForm = useForm<PasswordForm>({ resolver: zodResolver(changePasswordSchema) });
@@ -30,6 +44,23 @@ export function AccountSettings({ currentEmail }: { currentEmail: string }) {
       toast.success("Email updated. Please sign in again.");
       await signOut({ callbackUrl: "/admin/login" });
     } else toast.error(result.error);
+  };
+
+  const onRequestOtp = async () => {
+    const isValid = await passwordForm.trigger(["currentPassword", "newPassword", "confirmPassword"]);
+    if (!isValid) return;
+
+    setPending(true);
+    const result = await requestPasswordChangeOtpAction(passwordForm.getValues());
+    setPending(false);
+
+    if (result.success) {
+      toast.success("OTP sent to your email! It expires in 60 seconds.");
+      setOtpSent(true);
+      setTimeLeft(60);
+    } else {
+      toast.error(result.error);
+    }
   };
 
   const onPasswordSubmit = async (data: PasswordForm) => {
@@ -70,11 +101,11 @@ export function AccountSettings({ currentEmail }: { currentEmail: string }) {
         <h2 className="text-lg font-medium">Change Password</h2>
         <div>
           <Label>Current Password</Label>
-          <MaskedInput {...passwordForm.register("currentPassword")} className="mt-1" />
+          <MaskedInput {...passwordForm.register("currentPassword")} className="mt-1" disabled={otpSent} />
         </div>
         <div>
           <Label>New Password</Label>
-          <MaskedInput {...passwordForm.register("newPassword")} className="mt-1" />
+          <MaskedInput {...passwordForm.register("newPassword")} className="mt-1" disabled={otpSent} />
           <div className="mt-2 h-1 rounded bg-[var(--border)]">
             <div
               className="h-full rounded transition-all"
@@ -88,9 +119,31 @@ export function AccountSettings({ currentEmail }: { currentEmail: string }) {
         </div>
         <div>
           <Label>Confirm New Password</Label>
-          <MaskedInput {...passwordForm.register("confirmPassword")} className="mt-1" />
+          <MaskedInput {...passwordForm.register("confirmPassword")} className="mt-1" disabled={otpSent} />
         </div>
-        <Button type="submit" disabled={pending}>Update Password</Button>
+
+        {otpSent && (
+          <div className="p-4 bg-[var(--accent)]/10 border border-[var(--accent)]/20 rounded-xl space-y-3">
+            <div>
+              <Label>Enter OTP</Label>
+              <Input 
+                {...passwordForm.register("otp")} 
+                placeholder="6-digit OTP" 
+                maxLength={6}
+                className="mt-1" 
+              />
+            </div>
+            <p className="text-sm text-[var(--accent)]">
+              Time remaining: {timeLeft}s
+            </p>
+          </div>
+        )}
+
+        {!otpSent ? (
+          <Button type="button" onClick={onRequestOtp} disabled={pending}>Request OTP</Button>
+        ) : (
+          <Button type="submit" disabled={pending || timeLeft === 0}>Verify & Update Password</Button>
+        )}
       </form>
     </div>
   );
