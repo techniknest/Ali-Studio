@@ -11,9 +11,10 @@ export default async function AdminPanelLayout({
   children: React.ReactNode;
 }) {
   const setup = await checkSetupRequired();
-  if (setup.required) {
-    redirect("/admin/setup");
-  }
+  // Setup wizard redirect removed as requested by user
+  // if (setup.required) {
+  //   redirect("/admin/setup");
+  // }
 
   let unreadCount = 0;
   try {
