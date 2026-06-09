@@ -37,7 +37,7 @@ export async function connectDBWithUri(
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(uri);
+    cached.promise = mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
   }
 
   cached.conn = await cached.promise;

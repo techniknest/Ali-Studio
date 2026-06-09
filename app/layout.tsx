@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import "./globals.css";
 
+export const dynamic = "force-dynamic";
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-cormorant",
