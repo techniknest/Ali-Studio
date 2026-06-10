@@ -131,6 +131,17 @@ export class ConfigService {
 
   async checkSetupRequired() {
     try {
+      // If env vars provide all necessary config, setup is not required
+      const hasEnvConfig = Boolean(
+        process.env.MONGODB_URI &&
+        process.env.CLOUDINARY_CLOUD_NAME &&
+        process.env.CLOUDINARY_API_KEY &&
+        process.env.CLOUDINARY_API_SECRET
+      );
+      if (hasEnvConfig) {
+        return { required: false };
+      }
+
       const configCount = await configRepository.count();
       const settings = await settingsRepository.get();
       if (configCount === 0 || !settings?.setupCompleted) {
@@ -138,7 +149,12 @@ export class ConfigService {
       }
       return { required: false };
     } catch {
-      return { required: true };
+      // If we can't even check, see if env vars cover us
+      const hasEnvConfig = Boolean(
+        process.env.MONGODB_URI &&
+        process.env.CLOUDINARY_CLOUD_NAME
+      );
+      return { required: !hasEnvConfig };
     }
   }
 }

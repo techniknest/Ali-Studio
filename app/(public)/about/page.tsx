@@ -4,6 +4,8 @@ import { getTeam } from "@/actions/team.actions";
 import { FadeUp, StaggerContainer, StaggerItem } from "@/components/public/Animations";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "About | Ali Studio",
   description: "Learn about Ali Studio and our cinematic philosophy.",
@@ -14,11 +16,9 @@ export default async function AboutPage() {
   const settings = await getSettings();
   const teamMembers = await getTeam(true); // Fetch visible team members
 
-  const aboutText = settings?.aboutText
-    ? settings.aboutText.replace(/2020/g, "2015")
-    : "Welcome to Ali Studio, where every frame tells a story. Since 2015, we have curated annual photo and video projects focusing on timeless elegance and authentic emotions. We specialize in bringing your cinematic dreams to life.";
+  const aboutText = settings?.aboutText || "";
 
-  const aboutImageUrl = "/about-image.jpeg";
+  const aboutImageUrl = settings?.philosophyImageUrl;
 
   return (
     <div className="pt-24 min-h-screen bg-[#080808]">
@@ -52,7 +52,7 @@ export default async function AboutPage() {
               
               <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-neutral-900 z-10">
                 <Image
-                  src={settings?.aboutImageUrl || "/about-image.jpeg"}
+                  src={aboutImageUrl!}
                   alt="About Ali Studio"
                   fill
                   unoptimized={true}
@@ -79,7 +79,7 @@ export default async function AboutPage() {
                 The Art of <span className="text-[var(--accent)]">Cinematography</span>
               </h2>
             </div>
-            
+
             <div className="space-y-6 text-lg leading-relaxed text-[var(--text-secondary)] font-light">
               {aboutText.split('\n').map((para, i) => para.trim() && (
                 <p key={i}>{para}</p>

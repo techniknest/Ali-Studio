@@ -18,7 +18,7 @@ export async function uploadToCloudinary(formData: FormData, folder: string): Pr
 
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: `ali_studio/${folder}` },
+        { folder: `ali_studio/${folder}`, resource_type: "auto" },
         (error, result) => {
           if (error) reject(error);
           else resolve(result);

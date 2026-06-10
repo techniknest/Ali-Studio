@@ -7,14 +7,38 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { updateSettings } from "@/actions/settings.actions";
+import { uploadToCloudinary } from "@/actions/upload.actions";
 import type { ISettings } from "@/models/Settings";
 import { toast } from "sonner";
 
 export function SettingsForm({ settings }: { settings: ISettings }) {
   const [pending, setPending] = useState(false);
-  const { register, handleSubmit } = useForm<Partial<ISettings>>({
+  const [uploadingState, setUploadingState] = useState<Record<string, boolean>>({});
+  const { register, handleSubmit, setValue, watch } = useForm<Partial<ISettings>>({
     defaultValues: settings,
   });
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: keyof ISettings) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingState((prev) => ({ ...prev, [fieldName]: true }));
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await uploadToCloudinary(formData, "settings");
+      if (res.success && res.url) {
+        setValue(fieldName, res.url);
+        toast.success("File uploaded successfully");
+      } else {
+        toast.error(`Upload failed: ${res.error}`);
+      }
+    } catch (err: any) {
+      toast.error(`Upload failed: ${err.message}`);
+    } finally {
+      setUploadingState((prev) => ({ ...prev, [fieldName]: false }));
+    }
+  };
 
   const onSubmit = async (data: Partial<ISettings>) => {
     setPending(true);
@@ -38,7 +62,21 @@ export function SettingsForm({ settings }: { settings: ISettings }) {
         </div>
         <div>
           <Label>Logo URL</Label>
-          <Input {...register("logoUrl")} className="mt-1" />
+          <div className="flex gap-2 items-center mt-1">
+            <Input {...register("logoUrl")} className="flex-1" />
+            <div className="relative">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleUpload(e, "logoUrl")}
+                disabled={uploadingState["logoUrl"]}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full"
+              />
+              <Button type="button" variant="outline" disabled={uploadingState["logoUrl"]}>
+                {uploadingState["logoUrl"] ? "Uploading..." : "Upload Logo"}
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -54,11 +92,39 @@ export function SettingsForm({ settings }: { settings: ISettings }) {
         </div>
         <div>
           <Label>Hero Video URL</Label>
-          <Input {...register("heroVideoUrl")} className="mt-1" />
+          <div className="flex gap-2 items-center mt-1">
+            <Input {...register("heroVideoUrl")} className="flex-1" />
+            <div className="relative">
+              <Input
+                type="file"
+                accept="video/*"
+                onChange={(e) => handleUpload(e, "heroVideoUrl")}
+                disabled={uploadingState["heroVideoUrl"]}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full"
+              />
+              <Button type="button" variant="outline" disabled={uploadingState["heroVideoUrl"]}>
+                {uploadingState["heroVideoUrl"] ? "Uploading..." : "Upload Video"}
+              </Button>
+            </div>
+          </div>
         </div>
         <div>
           <Label>Hero Image URL (fallback)</Label>
-          <Input {...register("heroImageUrl")} className="mt-1" />
+          <div className="flex gap-2 items-center mt-1">
+            <Input {...register("heroImageUrl")} className="flex-1" />
+            <div className="relative">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleUpload(e, "heroImageUrl")}
+                disabled={uploadingState["heroImageUrl"]}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full"
+              />
+              <Button type="button" variant="outline" disabled={uploadingState["heroImageUrl"]}>
+                {uploadingState["heroImageUrl"] ? "Uploading..." : "Upload Image"}
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 

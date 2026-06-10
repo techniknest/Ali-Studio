@@ -2,6 +2,8 @@ import { getPortfolioItems } from "@/actions/portfolio.actions";
 import { PortfolioGrid } from "@/components/public/PortfolioGrid";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Portfolio | Ali Studio",
   description: "Explore our wedding films, events, and creative productions.",

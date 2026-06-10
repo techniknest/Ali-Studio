@@ -33,6 +33,7 @@ export interface ISettings {
   accentColor: string;
   footerText: string;
   setupCompleted: boolean;
+  philosophyImageUrl: string;
 }
 
 const SettingsSchema = new Schema<ISettings>(
@@ -75,6 +76,7 @@ const SettingsSchema = new Schema<ISettings>(
     accentColor: { type: String, default: "#C9A84C" },
     footerText: { type: String, default: "" },
     setupCompleted: { type: Boolean, default: false },
+    philosophyImageUrl: { type: String, default: "" },
   },
   { timestamps: true }
 );

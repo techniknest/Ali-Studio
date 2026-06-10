@@ -37,10 +37,21 @@ export async function connectDBWithUri(
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
+    cached.promise = mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 })
+      .then((mongoose) => mongoose)
+      .catch((err) => {
+        console.error("MongoDB connection error:", err);
+        cached.promise = null;
+        throw err;
+      });
   }
 
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
   return cached.conn;
 }
 

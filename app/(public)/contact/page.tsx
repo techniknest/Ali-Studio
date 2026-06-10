@@ -6,6 +6,8 @@ import { formatWhatsAppUrl } from "@/lib/utils";
 import { Mail, Phone, MapPin, MessageCircle } from "lucide-react";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Contact | Ali Studio",
   description: "Get in touch to book your cinematic experience.",

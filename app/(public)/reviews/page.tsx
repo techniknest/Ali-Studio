@@ -3,6 +3,8 @@ import { ReviewForm } from "@/components/public/ReviewForm";
 import { Star } from "lucide-react";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Reviews | Ali Studio",
   description: "What our clients say about working with Ali Studio.",

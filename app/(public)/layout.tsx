@@ -4,6 +4,8 @@ import { Footer } from "@/components/public/Footer";
 import { WhatsAppButton } from "@/components/public/WhatsAppButton";
 import { HeroBackground } from "@/components/public/HeroBackground";
 
+export const dynamic = "force-dynamic";
+
 export default async function PublicLayout({
   children,
 }: {

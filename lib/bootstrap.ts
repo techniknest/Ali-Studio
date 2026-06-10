@@ -31,12 +31,12 @@ export async function seedBootstrapAdmin(mongoUri?: string): Promise<void> {
     const existingConfig = await Config.findOne();
     if (!existingConfig) {
       const configsToSeed = [
-        { key: "MONGODB_URI", value: process.env.MONGODB_URI || "", category: "mongodb" },
-        { key: "CLOUDINARY_CLOUD_NAME", value: process.env.CLOUDINARY_CLOUD_NAME || "", category: "cloudinary" },
-        { key: "CLOUDINARY_API_KEY", value: process.env.CLOUDINARY_API_KEY || "", category: "cloudinary" },
-        { key: "CLOUDINARY_API_SECRET", value: process.env.CLOUDINARY_API_SECRET || "", category: "cloudinary" },
-        { key: "SMTP_USER", value: process.env.EMAIL_USER || "", category: "smtp" },
-        { key: "SMTP_PASS", value: process.env.EMAIL_PASS || "", category: "smtp" },
+        { key: "MONGODB_URI", value: process.env.MONGODB_URI || "", category: "mongodb" as const },
+        { key: "CLOUDINARY_CLOUD_NAME", value: process.env.CLOUDINARY_CLOUD_NAME || "", category: "cloudinary" as const },
+        { key: "CLOUDINARY_API_KEY", value: process.env.CLOUDINARY_API_KEY || "", category: "cloudinary" as const },
+        { key: "CLOUDINARY_API_SECRET", value: process.env.CLOUDINARY_API_SECRET || "", category: "cloudinary" as const },
+        { key: "SMTP_USER", value: process.env.SMTP_USER || process.env.EMAIL_USER || "", category: "smtp" as const },
+        { key: "SMTP_PASS", value: process.env.SMTP_PASS || process.env.EMAIL_PASS || "", category: "smtp" as const },
       ];
 
       for (const c of configsToSeed) {
@@ -51,9 +51,15 @@ export async function seedBootstrapAdmin(mongoUri?: string): Promise<void> {
       console.log("Config seeded");
     }
 
-    // Hardcoded dummy data seeding has been completely removed!
-    // Settings, Services, Team, and Portfolio will no longer be auto-populated with dummy data.
-    // You can now set them up cleanly through the Admin Dashboard.
+    // Seed Settings with setupCompleted = true so the setup wizard is skipped
+    const existingSettings = await Settings.findOne();
+    if (!existingSettings) {
+      await Settings.create({ setupCompleted: true });
+      console.log("Settings seeded with setupCompleted: true");
+    } else if (!existingSettings.setupCompleted) {
+      await Settings.updateOne({}, { setupCompleted: true });
+      console.log("Settings updated: setupCompleted set to true");
+    }
 
   } catch (e) {
     console.error("Bootstrap error:", e);

@@ -5,6 +5,8 @@ import { ServiceCard } from "@/components/public/ServiceCard";
 import { FadeUp, StaggerContainer, StaggerItem } from "@/components/public/Animations";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Services | Ali Studio",
   description: "Wedding films, event coverage, and creative videography services.",

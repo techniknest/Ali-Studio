@@ -10,6 +10,8 @@ import { formatWhatsAppUrl, getDisplayCategory } from "@/lib/utils";
 import { FadeUp, RevealText, StaggerContainer, StaggerItem, MouseTilt } from "@/components/public/Animations";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   return {
@@ -184,19 +186,17 @@ export default async function HomePage() {
                 The <span className="text-[var(--accent)]">Art</span> of Storytelling
               </h2>
               <div className="space-y-6 text-lg leading-relaxed text-[var(--text-secondary)] font-light">
-                <p>
-                  Welcome to Ali Studio, where every fleeting moment is transformed into a timeless masterpiece. Since 2015, we have dedicated ourselves to the fine art of cinematography and photography, capturing the raw, authentic emotions of your most cherished days.
-                </p>
-                <p>
-                  With an eye for high-end editorial elegance and a passion for bespoke visual storytelling, our studio doesn&apos;t just record events—we craft cinematic legacies that resonate for generations.
-                </p>
-              </div>
-              <div className="pt-4">
-                
+                {settings.aboutText.split('\n').map((para: string, i: number) => para.trim() && (
+                  <p key={i}>{para}</p>
+                ))}
               </div>
             </FadeUp>
             <FadeUp delay={0.2} className="relative w-full aspect-[5/4] rounded-3xl overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] border border-[var(--accent)]/10 group">
-              <Image src="/image3.png" alt="About Studio" fill unoptimized={true} className="object-cover transition-transform duration-1000 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 50vw" />
+              {settings?.aboutImageUrl ? (
+                <Image src={settings.aboutImageUrl} alt="About Studio" fill unoptimized={true} className="object-cover transition-transform duration-1000 group-hover:scale-105" sizes="(max-width: 1024px) 100vw, 50vw" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-tr from-[#111] to-[#222]" />
+              )}
               <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity duration-700 pointer-events-none" />
             </FadeUp>
           </div>
@@ -339,7 +339,6 @@ export default async function HomePage() {
             <div className="space-y-36">
               {teamMembers.map((member: { _id: string; name: string; designation: string; imageUrl: string }, index: number) => {
                 const isEven = index % 2 === 0;
-                const isAli = member.name.toLowerCase() === "ali";
                 
                 return (
                   <div key={member._id} className={`flex flex-col lg:flex-row gap-16 lg:gap-24 items-center ${isEven ? 'lg:flex-row-reverse' : ''}`}>
@@ -350,58 +349,14 @@ export default async function HomePage() {
                           {member.designation}
                         </span>
                         <h3 className="font-display text-5xl md:text-6xl text-white tracking-wide">
-                          {isAli ? "Najm Ali" : member.name}
+                          {member.name}
                           <span className="text-[var(--accent)]">.</span>
                         </h3>
                       </div>
                       
-                      {isAli ? (
-                        <>
-                          <div className="space-y-6 text-[var(--text-secondary)] font-light leading-relaxed text-base md:text-lg">
-                            <p>
-                              As the founder and lead visionary behind Ali Studio, Najm (known professionally as Ali) has spent over a decade crafting cinematic stories. His signature philosophy merges raw, authentic human emotions with high-end editorial aesthetics, turning fleeting moments into timeless works of art.
-                            </p>
-                            <p>
-                              Najm’s obsession with visual perfection drives the studio’s standard. From scouting unique scenic locations and directing bespoke lighting setups, to orchestrating complex multi-cam productions, he ensures that every project reflects premium editorial elegance.
-                            </p>
-                          </div>
-                          
-                          {/* Key Highlights */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-white/5 text-left">
-                            <div className="space-y-2">
-                              <h4 className="text-white font-medium text-sm uppercase tracking-wider flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" /> Cinematic Vision
-                              </h4>
-                              <p className="text-xs text-[var(--text-secondary)]/80 leading-relaxed font-light">
-                                Crafting films with a narrative focus and cinema-grade lighting.
-                              </p>
-                            </div>
-                            <div className="space-y-2">
-                              <h4 className="text-white font-medium text-sm uppercase tracking-wider flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" /> Tailored Curation
-                              </h4>
-                              <p className="text-xs text-[var(--text-secondary)]/80 leading-relaxed font-light">
-                                Customized art direction for each wedding, portrait, and commercial shoot.
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Quote */}
-                          <div className="relative pt-6 border-t border-white/5 text-left">
-                            <span className="absolute -top-2 -left-2 text-7xl font-serif text-[var(--accent)]/10 leading-none pointer-events-none">“</span>
-                            <p className="text-base text-[var(--accent)] italic font-light tracking-wide pl-6">
-                              Every frame is a canvas. Our mission is to fill it with light, genuine emotion, and life.
-                            </p>
-                            <footer className="text-xs text-[var(--text-secondary)]/60 uppercase tracking-widest mt-2 pl-6">
-                              — Najm Ali, Founder
-                            </footer>
-                          </div>
-                        </>
-                      ) : (
-                        <p className="text-lg leading-relaxed text-[var(--text-secondary)] font-light">
-                          Bringing cinematic dreams to reality through an obsessive attention to detail and a passion for storytelling.
-                        </p>
-                      )}
+                      <p className="text-lg leading-relaxed text-[var(--text-secondary)] font-light">
+                        Bringing cinematic dreams to reality through an obsessive attention to detail and a passion for storytelling.
+                      </p>
                     </FadeUp>
 
                     {/* Image Column */}
@@ -473,7 +428,7 @@ export default async function HomePage() {
       <section className="py-24 relative overflow-hidden bg-gradient-to-b from-transparent to-black/80 border-t border-white/5">
         <div className="absolute inset-0 opacity-5 mix-blend-overlay pointer-events-none" />
         <FadeUp className="container-main grid gap-12 md:grid-cols-3">
-          <AnimatedCounter value={settings?.statsYearsExp === 8 ? 10 : (settings?.statsYearsExp ?? 10)} label="Years Experience" suffix="+" />
+          <AnimatedCounter value={settings?.statsYearsExp ?? 10} label="Years Experience" suffix="+" />
           <AnimatedCounter value={settings?.statsProjectsDone ?? 250} label="Projects Done" suffix="+" />
           <AnimatedCounter value={settings?.statsHappyClients ?? 200} label="Happy Clients" suffix="+" />
         </FadeUp>
