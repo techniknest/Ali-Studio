@@ -8,11 +8,11 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "img.youtube.com" },
     ],
   },
-  // experimental: {
-  //   serverActions: {
-  //     allowedOrigins: ["localhost:3000"],
-  //   },
-  // },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '100mb',
+    },
+  },
   async headers() {
     return [
       {

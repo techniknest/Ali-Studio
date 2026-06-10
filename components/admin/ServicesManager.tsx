@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { uploadToCloudinary } from "@/actions/upload.actions";
 import { createService, updateService, deleteService, reorderServices } from "@/actions/services.actions";
+import { compressImage } from "@/lib/image-compress";
 
 type ServiceData = { _id: string; title: string; shortDescription: string; priceRange: string; visible: boolean; images: string[]; order?: number; longDescription?: string; };
 
@@ -42,13 +43,27 @@ export function ServicesManager({ initialServices }: { initialServices: ServiceD
     const newImages = [...(formData.images || [])];
     
     for (const file of Array.from(e.target.files)) {
-      const data = new FormData();
-      data.append("file", file);
-      const res = await uploadToCloudinary(data, "services");
-      if (res.success && res.url) {
-        newImages.push(res.url);
-      } else {
-        toast.error(`Failed to upload ${file.name}: ${res.error}`);
+      try {
+        const compressedFile = await compressImage(file);
+        const data = new FormData();
+        data.append("file", compressedFile);
+        const res = await uploadToCloudinary(data, "services");
+        if (res.success && res.url) {
+          newImages.push(res.url);
+        } else {
+          toast.error(`Failed to upload ${file.name}: ${res.error}`);
+        }
+      } catch (err) {
+        console.error("Compression error:", err);
+        // Fallback to original file
+        const data = new FormData();
+        data.append("file", file);
+        const res = await uploadToCloudinary(data, "services");
+        if (res.success && res.url) {
+          newImages.push(res.url);
+        } else {
+          toast.error(`Failed to upload ${file.name}: ${res.error}`);
+        }
       }
     }
     

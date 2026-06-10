@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { uploadToCloudinary } from "@/actions/upload.actions";
+import { compressImage } from "@/lib/image-compress";
 import { createTeamMember, updateTeamMember, deleteTeamMember, reorderTeam } from "@/actions/team.actions";
 
 type TeamData = { _id: string; name: string; designation: string; imageUrl: string; position: string; visible: boolean; order?: number; };
@@ -39,14 +40,28 @@ export function TeamManager({ initialTeam }: { initialTeam: TeamData[] }) {
     setUploading(true);
     
     const file = e.target.files[0];
-    const data = new FormData();
-    data.append("file", file);
-    
-    const res = await uploadToCloudinary(data, "team");
-    if (res.success && res.url) {
-      setFormData({ ...formData, imageUrl: res.url });
-    } else {
-      toast.error(`Failed to upload: ${res.error}`);
+    try {
+      const compressedFile = await compressImage(file);
+      const data = new FormData();
+      data.append("file", compressedFile);
+      
+      const res = await uploadToCloudinary(data, "team");
+      if (res.success && res.url) {
+        setFormData({ ...formData, imageUrl: res.url });
+      } else {
+        toast.error(`Failed to upload: ${res.error}`);
+      }
+    } catch (err) {
+      console.error("Compression error:", err);
+      // Fallback to original file
+      const data = new FormData();
+      data.append("file", file);
+      const res = await uploadToCloudinary(data, "team");
+      if (res.success && res.url) {
+        setFormData({ ...formData, imageUrl: res.url });
+      } else {
+        toast.error(`Failed to upload: ${res.error}`);
+      }
     }
     
     setUploading(false);

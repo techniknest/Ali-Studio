@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { uploadToCloudinary } from "@/actions/upload.actions";
+import { compressImage } from "@/lib/image-compress";
 import {
   createPortfolioItem,
   updatePortfolioItem,
@@ -69,17 +70,34 @@ export function PortfolioManager({ initialItems }: { initialItems: PortfolioData
     setUploading(true);
 
     const file = e.target.files[0];
-    const data = new FormData();
-    data.append("file", file);
+    try {
+      const compressedFile = await compressImage(file);
+      const data = new FormData();
+      data.append("file", compressedFile);
 
-    const res = await uploadToCloudinary(data, "portfolio");
-    if (res.success && res.url) {
-      setFormData((prev) => ({
-        ...prev,
-        images: [...(prev.images || []), res.url!],
-      }));
-    } else {
-      toast.error(`Failed to upload: ${res.error}`);
+      const res = await uploadToCloudinary(data, "portfolio");
+      if (res.success && res.url) {
+        setFormData((prev) => ({
+          ...prev,
+          images: [...(prev.images || []), res.url!],
+        }));
+      } else {
+        toast.error(`Failed to upload: ${res.error}`);
+      }
+    } catch (err) {
+      console.error("Compression error:", err);
+      // Fallback to original file
+      const data = new FormData();
+      data.append("file", file);
+      const res = await uploadToCloudinary(data, "portfolio");
+      if (res.success && res.url) {
+        setFormData((prev) => ({
+          ...prev,
+          images: [...(prev.images || []), res.url!],
+        }));
+      } else {
+        toast.error(`Failed to upload: ${res.error}`);
+      }
     }
 
     setUploading(false);

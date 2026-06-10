@@ -10,6 +10,7 @@ import { updateSettings } from "@/actions/settings.actions";
 import { uploadToCloudinary } from "@/actions/upload.actions";
 import type { ISettings } from "@/models/Settings";
 import { toast } from "sonner";
+import { compressImage } from "@/lib/image-compress";
 
 export function SettingsForm({ settings }: { settings: ISettings }) {
   const [pending, setPending] = useState(false);
@@ -24,8 +25,9 @@ export function SettingsForm({ settings }: { settings: ISettings }) {
 
     setUploadingState((prev) => ({ ...prev, [fieldName]: true }));
     try {
+      const compressedFile = await compressImage(file);
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", compressedFile);
       const res = await uploadToCloudinary(formData, "settings");
       if (res.success && res.url) {
         setValue(fieldName, res.url);
