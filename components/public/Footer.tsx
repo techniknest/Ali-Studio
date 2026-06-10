@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { formatWhatsAppUrl } from "@/lib/utils";
 import type { ISettings } from "@/models/Settings";
-import { Instagram, Facebook, Mail, Music, MessageCircle } from "lucide-react";
+import { Instagram, Facebook, Mail, Music, MessageCircle, Youtube } from "lucide-react";
 
 export function Footer({ settings }: { settings: ISettings | null }) {
   const year = new Date().getFullYear();
@@ -56,6 +56,11 @@ export function Footer({ settings }: { settings: ISettings | null }) {
               <li>
                 <a href={settings?.tiktok || "#"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-[var(--accent)] transition-colors">
                   <Music size={16} className="text-[var(--accent)]" /> TikTok
+                </a>
+              </li>
+              <li>
+                <a href={settings?.youtube || "#"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-[var(--accent)] transition-colors">
+                  <Youtube size={16} className="text-[var(--accent)]" /> YouTube
                 </a>
               </li>
               <li>

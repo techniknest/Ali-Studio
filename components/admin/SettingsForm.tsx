@@ -110,9 +110,9 @@ export function SettingsForm({ settings }: { settings: ISettings }) {
           </div>
         </div>
         <div>
-          <Label>Hero Image URL (fallback)</Label>
+          <Label>Hero Background Image</Label>
           <div className="flex gap-2 items-center mt-1">
-            <Input {...register("heroImageUrl")} className="flex-1" />
+            <Input {...register("heroImageUrl")} className="flex-1" placeholder="Upload or enter image URL..." />
             <div className="relative">
               <Input
                 type="file"
@@ -148,26 +148,46 @@ export function SettingsForm({ settings }: { settings: ISettings }) {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-medium text-[var(--accent)]">Contact</h2>
-        <div>
-          <Label>Phone</Label>
-          <Input {...register("phone")} className="mt-1" />
-        </div>
-        <div>
-          <Label>WhatsApp</Label>
-          <Input {...register("whatsappNumber")} className="mt-1" />
-        </div>
-        <div>
-          <Label>Email</Label>
-          <Input {...register("email")} className="mt-1" />
-        </div>
-        <div>
-          <Label>Address</Label>
-          <Input {...register("address")} className="mt-1" />
+        <h2 className="text-lg font-medium text-[var(--accent)]">Contact & Social</h2>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label>Phone</Label>
+            <Input {...register("phone")} className="mt-1" />
+          </div>
+          <div>
+            <Label>WhatsApp</Label>
+            <Input {...register("whatsappNumber")} className="mt-1" />
+          </div>
+          <div>
+            <Label>Email</Label>
+            <Input {...register("email")} className="mt-1" />
+          </div>
+          <div>
+            <Label>Address</Label>
+            <Input {...register("address")} className="mt-1" />
+          </div>
         </div>
         <div>
           <Label>Maps Embed URL</Label>
           <Input {...register("mapsEmbedUrl")} className="mt-1" />
+        </div>
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <div>
+            <Label>Instagram URL</Label>
+            <Input {...register("instagram")} className="mt-1" />
+          </div>
+          <div>
+            <Label>Facebook URL</Label>
+            <Input {...register("facebook")} className="mt-1" />
+          </div>
+          <div>
+            <Label>TikTok URL</Label>
+            <Input {...register("tiktok")} className="mt-1" />
+          </div>
+          <div>
+            <Label>YouTube URL</Label>
+            <Input {...register("youtube")} className="mt-1" />
+          </div>
         </div>
       </section>
 
@@ -176,6 +196,42 @@ export function SettingsForm({ settings }: { settings: ISettings }) {
         <div>
           <Label>About Text</Label>
           <Textarea {...register("aboutText")} className="mt-1" rows={5} />
+        </div>
+        <div>
+          <Label>About Image (Art of Storytelling)</Label>
+          <div className="flex gap-2 items-center mt-1">
+            <Input {...register("aboutImageUrl")} className="flex-1" placeholder="Upload or enter image URL..." />
+            <div className="relative">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleUpload(e, "aboutImageUrl")}
+                disabled={uploadingState["aboutImageUrl"]}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full"
+              />
+              <Button type="button" variant="outline" disabled={uploadingState["aboutImageUrl"]}>
+                {uploadingState["aboutImageUrl"] ? "Uploading..." : "Upload Image"}
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <Label>Philosophy Image (Art of Cinematography)</Label>
+          <div className="flex gap-2 items-center mt-1">
+            <Input {...register("philosophyImageUrl")} className="flex-1" placeholder="Upload or enter image URL..." />
+            <div className="relative">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleUpload(e, "philosophyImageUrl")}
+                disabled={uploadingState["philosophyImageUrl"]}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full"
+              />
+              <Button type="button" variant="outline" disabled={uploadingState["philosophyImageUrl"]}>
+                {uploadingState["philosophyImageUrl"] ? "Uploading..." : "Upload Image"}
+              </Button>
+            </div>
+          </div>
         </div>
         <div>
           <Label>Meta Title</Label>
