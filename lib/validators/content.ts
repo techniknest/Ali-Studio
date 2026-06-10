@@ -81,6 +81,7 @@ export const settingsSchema = z.object({
   statsHappyClients: z.coerce.number().optional(),
   aboutText: z.string().optional(),
   aboutImageUrl: z.string().optional(),
+  philosophyImageUrl: z.string().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   ogImageUrl: z.string().optional(),

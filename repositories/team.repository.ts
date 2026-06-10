@@ -2,9 +2,15 @@ import { connectDB } from "@/lib/mongodb";
 import Team, { ITeam } from "@/models/Team";
 
 export class TeamRepository {
-  async findAll(visibleOnly = false): Promise<ITeam[]> {
+  async findAll(visibleOnly = false, homeOnly = false): Promise<ITeam[]> {
     await connectDB();
-    const query = visibleOnly ? { visible: true } : {};
+    const query: any = {};
+    if (visibleOnly) {
+      query.visible = true;
+    }
+    if (homeOnly) {
+      query.showOnHome = true;
+    }
     const team = await Team.find(query).sort({ order: 1 }).lean();
     return JSON.parse(JSON.stringify(team));
   }

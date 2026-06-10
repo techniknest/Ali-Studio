@@ -11,9 +11,9 @@ function revalidateTeam() {
   revalidatePath("/admin/team");
 }
 
-export async function getTeam(visibleOnly = false): Promise<any[]> {
+export async function getTeam(visibleOnly = false, homeOnly = false): Promise<any[]> {
   try {
-    return await teamService.getTeam(visibleOnly);
+    return await teamService.getTeam(visibleOnly, homeOnly);
   } catch (err) {
     console.error("Failed to get team:", err);
     return [];

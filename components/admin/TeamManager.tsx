@@ -11,7 +11,7 @@ import { uploadToCloudinary } from "@/actions/upload.actions";
 import { compressImage } from "@/lib/image-compress";
 import { createTeamMember, updateTeamMember, deleteTeamMember, reorderTeam } from "@/actions/team.actions";
 
-type TeamData = { _id: string; name: string; designation: string; imageUrl: string; position: string; visible: boolean; order?: number; };
+type TeamData = { _id: string; name: string; designation: string; imageUrl: string; position: string; visible: boolean; showOnHome?: boolean; order?: number; };
 
 export function TeamManager({ initialTeam }: { initialTeam: TeamData[] }) {
   const [team, setTeam] = useState(initialTeam);
@@ -27,7 +27,7 @@ export function TeamManager({ initialTeam }: { initialTeam: TeamData[] }) {
 
   const handleAddNew = () => {
     setEditingId("new");
-    setFormData({ name: "", designation: "", imageUrl: "", position: "left", visible: true });
+    setFormData({ name: "", designation: "", imageUrl: "", position: "left", visible: true, showOnHome: true });
   };
 
   const handleCancel = () => {
@@ -141,7 +141,7 @@ export function TeamManager({ initialTeam }: { initialTeam: TeamData[] }) {
             <Input required value={formData.designation} onChange={e => setFormData({...formData, designation: e.target.value})} className="mt-1" />
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
               <Label>Position (Left/Right)</Label>
               <select 
@@ -157,6 +157,12 @@ export function TeamManager({ initialTeam }: { initialTeam: TeamData[] }) {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={formData.visible} onChange={e => setFormData({...formData, visible: e.target.checked})} className="rounded bg-transparent" />
                 <span className="text-sm font-medium">Visible</span>
+              </label>
+            </div>
+            <div className="flex items-end pb-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={formData.showOnHome !== false} onChange={e => setFormData({...formData, showOnHome: e.target.checked})} className="rounded bg-transparent" />
+                <span className="text-sm font-medium">Show on Homepage</span>
               </label>
             </div>
           </div>
@@ -217,6 +223,9 @@ export function TeamManager({ initialTeam }: { initialTeam: TeamData[] }) {
                 <div className="flex gap-2">
                   <Badge variant="default">{member.position || 'left'}</Badge>
                   <Badge variant={member.visible ? "success" : "default"}>{member.visible ? "Visible" : "Hidden"}</Badge>
+                  <Badge variant={member.showOnHome !== false ? "success" : "default"}>
+                    {member.showOnHome !== false ? "Home + About" : "About Only"}
+                  </Badge>
                 </div>
                 <div className="flex gap-2 mt-2">
                   <Button size="sm" variant="outline" onClick={() => moveUp(index)} disabled={index === 0}>↑</Button>

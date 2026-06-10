@@ -2,8 +2,8 @@ import { teamRepository } from "@/repositories/team.repository";
 import { NotFoundError } from "@/lib/errors/app-error";
 
 export class TeamService {
-  async getTeam(visibleOnly = false) {
-    return teamRepository.findAll(visibleOnly);
+  async getTeam(visibleOnly = false, homeOnly = false) {
+    return teamRepository.findAll(visibleOnly, homeOnly);
   }
 
   async createMember(data: any) {

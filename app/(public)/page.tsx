@@ -27,7 +27,7 @@ export default async function HomePage() {
   const allServices = await getServices(true);
   const reviewsData = await getReviews({ approvedOnly: true, limit: 6 });
   const reviews = reviewsData.items;
-  const teamMembers = await getTeam(true);
+  const teamMembers = await getTeam(true, true);
 
   const headline = settings?.heroHeadline ?? "We Capture Your Story";
 

@@ -7,6 +7,7 @@ export interface ITeam {
   position: 'left' | 'right';
   order: number;
   visible: boolean;
+  showOnHome: boolean;
 }
 
 const TeamSchema = new Schema<ITeam>(
@@ -17,6 +18,7 @@ const TeamSchema = new Schema<ITeam>(
     position: { type: String, enum: ['left', 'right'], default: 'left' },
     order: { type: Number, default: 0 },
     visible: { type: Boolean, default: true },
+    showOnHome: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

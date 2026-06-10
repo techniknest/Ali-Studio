@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   const settings = await getSettings();
-  const teamMembers = await getTeam(true); // Fetch visible team members
+  const teamMembers = await getTeam(true, false); // Fetch visible team members
 
   const aboutText = settings?.aboutText || "";
 
