@@ -14,7 +14,7 @@ import { toast } from "sonner";
 export function SettingsForm({ settings }: { settings: ISettings }) {
   const [pending, setPending] = useState(false);
   const [uploadingState, setUploadingState] = useState<Record<string, boolean>>({});
-  const { register, handleSubmit, setValue, watch } = useForm<Partial<ISettings>>({
+  const { register, handleSubmit, setValue } = useForm<Partial<ISettings>>({
     defaultValues: settings,
   });
 
@@ -33,8 +33,9 @@ export function SettingsForm({ settings }: { settings: ISettings }) {
       } else {
         toast.error(`Upload failed: ${res.error}`);
       }
-    } catch (err: any) {
-      toast.error(`Upload failed: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      toast.error(`Upload failed: ${errorMessage}`);
     } finally {
       setUploadingState((prev) => ({ ...prev, [fieldName]: false }));
     }

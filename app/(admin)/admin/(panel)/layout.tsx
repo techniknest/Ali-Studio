@@ -1,8 +1,5 @@
 import { Sidebar } from "@/components/admin/Sidebar";
 import { getUnreadCount } from "@/actions/messages.actions";
-import { checkSetupRequired } from "@/actions/config.actions";
-import { redirect } from "next/navigation";
-
 export const dynamic = "force-dynamic";
 
 export default async function AdminPanelLayout({
@@ -10,11 +7,7 @@ export default async function AdminPanelLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const setup = await checkSetupRequired();
   // Setup wizard redirect removed as requested by user
-  // if (setup.required) {
-  //   redirect("/admin/setup");
-  // }
 
   let unreadCount = 0;
   try {

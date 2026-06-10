@@ -2,14 +2,8 @@ import bcrypt from "bcryptjs";
 import Admin from "@/models/Admin";
 import Config from "@/models/Config";
 import Settings from "@/models/Settings";
-import Service from "@/models/Service";
-import Team from "@/models/Team";
-import Portfolio from "@/models/Portfolio";
 import { connectDB, connectDBWithUri } from "@/lib/mongodb";
 import { encrypt } from "@/lib/encryption";
-import fs from "fs";
-import path from "path";
-import { v2 as cloudinary } from "cloudinary";
 
 export async function seedBootstrapAdmin(mongoUri?: string): Promise<void> {
   const email = process.env.BOOTSTRAP_ADMIN_EMAIL || "najmalistudio@gmail.com";
