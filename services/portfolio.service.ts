@@ -1,6 +1,6 @@
 import { portfolioRepository } from "@/repositories/portfolio.repository";
 import { NotFoundError } from "@/lib/errors/app-error";
-
+//test
 export class PortfolioService {
   async getPortfolioItems(options?: {
     visibleOnly?: boolean;
@@ -9,6 +9,7 @@ export class PortfolioService {
     page?: number;
     limit?: number;
   }) {
+
     const filter: Record<string, unknown> = {};
     if (options?.visibleOnly) filter.visible = true;
     if (options?.featuredOnly) filter.featured = true;
